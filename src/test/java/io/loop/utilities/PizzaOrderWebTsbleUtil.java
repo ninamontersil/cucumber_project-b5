@@ -1,4 +1,4 @@
-package io.loop.utilities.utilities;
+package io.loop.utilities;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
