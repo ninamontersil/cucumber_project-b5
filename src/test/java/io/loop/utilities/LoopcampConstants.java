@@ -1,4 +1,4 @@
-package io.loop.utilities.utilities;
+package io.loop.utilities;
 
 public class LoopcampConstants {
 

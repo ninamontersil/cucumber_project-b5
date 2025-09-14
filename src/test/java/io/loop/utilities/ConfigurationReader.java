@@ -1,4 +1,4 @@
-package io.loop.utilities.utilities;
+package io.loop.utilities;
 
 import java.io.FileInputStream;
 import java.util.Properties;

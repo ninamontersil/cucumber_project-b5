@@ -4,17 +4,17 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.loop.pages.GoogleSearchPage;
-import io.loop.utilities.utilities.ConfigurationReader;
-import io.loop.utilities.utilities.Driver;
+import io.loop.utilities.BrowserUtils;
+import io.loop.utilities.ConfigurationReader;
+import io.loop.utilities.Driver;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class GoogleSearchStepDefs {
 
@@ -24,37 +24,71 @@ public class GoogleSearchStepDefs {
     @Given("user is on Google search page")
     public void user_is_on_google_search_page() {
         Driver.getDriver().get(ConfigurationReader.getProperties("google.url"));
-
     }
-    @When("user types Loop Academy in the google search box and clicks enter")
-    public void user_types_loop_academy_in_the_google_search_box_and_clicks_enter() {
+
+    @When("user types Loop Academy in the Google search box and click enter")
+    public void user_types_loop_academy_in_the_google_search_box_and_click_enter() throws InterruptedException {
         googleSearchPage.searchBox.sendKeys("Loop Academy" + Keys.ENTER);
-
+        Thread.sleep(2000);
     }
+
+
     @Then("user should be able to see Loop Academy - Google search in the google title")
-    public void user_should_be_able_to_see_loop_academy_google_search_in_the_google_title() throws InterruptedException {
-        Thread.sleep(3000);   // now no red squiggly
+    public void user_should_be_able_to_see_loop_academy_google_search_in_the_google_title() {
         String actual = Driver.getDriver().getTitle();
-        assertTrue("Expected does NOT match actual", actual.equalsIgnoreCase("Loop Academy - Google search"));    }
-
-    @When("user types {string} in the google search box and clicks enter")
-    public void user_types_in_the_google_search_box_and_clicks_enter(String input) {
-       googleSearchPage.searchBox.sendKeys(input + Keys.ENTER);
+        assertEquals("Not mach with actual", "Loop Academy - Google Search", actual);
 
     }
+
+    @When("user types {string} in the Google search box and click enter")
+    public void user_types_in_the_google_search_box_and_click_enter(String input) {
+        googleSearchPage.searchBox.sendKeys(input + Keys.ENTER);
+    }
+
     @Then("user should be able to see {string} in the google title")
-    public void user_should_be_able_to_see_in_the_google_title(String expectedTitle) throws InterruptedException {
-       WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
-       wait.until(ExpectedConditions.titleIs(expectedTitle));
+    public void user_should_be_able_to_see_search_in_the_google_title(String expectedTitle) {
+        WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(15));
+        wait.until(ExpectedConditions.titleIs(expectedTitle));
+        String actual = Driver.getDriver().getTitle();
+        assertEquals("Expected does NOT match actual", expectedTitle, actual);
 
-
-        String actualTitle = Driver.getDriver().getTitle();
-        assertEquals("Expected does NOT match actual", expectedTitle, actualTitle);
-    }
     }
 
+    @When("user search for {string}")
+    public void user_search_for(String country) {
+        googleSearchPage.searchBox.sendKeys("What is the capital of: " + country + Keys.ENTER);
 
 
+    }
+
+    @Then("user should see the {string} in the results")
+    public void user_should_see_the_in_the_results(String expectedCapital) {
+        String actualCapital = googleSearchPage.searchResults.getText();
+        assertEquals("Capital does not match!", expectedCapital, actualCapital);
+    }
+
+    @Then("we love Nina")
+    public void we_love_nina() {
+        System.out.println("We love Nina ❤️");
+    }
+
+
+
+    @Then("user searching the following items")
+    public void user_searching_the_following_items(List<String> items) {
+        for (String item : items) {
+
+            googleSearchPage.searchBox.clear();
+            googleSearchPage.searchBox.sendKeys(item + Keys.ENTER);
+            WebDriverWait wait = new WebDriverWait(Driver.getDriver(), Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.titleIs(item + " - Google Search"));
+            assertEquals("Expected does NOT match actual", item + " - Google Search", Driver.getDriver().getTitle());
+            BrowserUtils.takeScreenshot();
+
+
+        }
+    }
+}
 
 
 
