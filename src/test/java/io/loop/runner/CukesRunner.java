@@ -13,7 +13,8 @@ import org.junit.runner.RunWith;
             glue = "io/loop/step_definitions",
             dryRun = false,
             tags = "@google_search",
-            monochrome = true
+            monochrome = true,
+            publish = false
 
     )
 
